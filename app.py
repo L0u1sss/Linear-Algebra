@@ -6,7 +6,7 @@ import pandas as pd
 # Page config
 # ─────────────────────────────────────────────
 st.set_page_config(
-    page_title="ระบบแนะนำสินค้า SVD | Shopee",
+    page_title="ระบบแนะนำสินค้า SVD | Shoplui",
     page_icon="🛒",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -229,7 +229,8 @@ def contrast_text_style(value: float, min_value: float, max_value: float, cutoff
 # ─────────────────────────────────────────────
 st.markdown("""
 <div class="sv-header">
-  <h1><i class="fa-solid fa-cart-shopping"></i>&nbsp; ระบบแนะนำสินค้าออนไลน์ด้วย SVD</h1>
+  <h1><i class="fa-solid fa-cart-shopping"></i>&nbsp;Shoplui ระบบแนะนำสินค้าออนไลน์ด้วย SVD</h1>
+    <p>เว็ปจำลองการคำนวณระบบแนะนำสินค้าออนไลน์</p>
   <p>Online Product Recommendation System Using Singular Value Decomposition &nbsp;·&nbsp;
      Linear Algebra Final Project</p>
 </div>
