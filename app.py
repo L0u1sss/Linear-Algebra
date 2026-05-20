@@ -275,6 +275,12 @@ section[data-testid="stSidebar"] .stButton > button:hover {
 # Constants
 # ─────────────────────────────────────────────
 PRODUCTS = ["เสื้อยืด", "หูฟังไร้สาย", "รองเท้าผ้าใบ", "กระเป๋าเป้", "คีย์บอร์ดเกมมิ่ง"]
+FASHION_VECTOR = np.array([1, 0, 1, 1, 0])
+IT_VECTOR = np.array([0, 1, 0, 0, 1])
+CATEGORY_VECTORS = {
+    "Fashion": FASHION_VECTOR,
+    "IT": IT_VECTOR,
+}
 SCORE_OPTIONS = [0, 1, 2, 3, 4, 5]
 SCORE_LABELS = {
     0: "0 = ยังไม่มีการโต้ตอบ",
@@ -323,6 +329,12 @@ def get_cosine_similarity_matrix(R: np.ndarray) -> np.ndarray:
         for j in range(n):
             similarity[i, j] = cosine_similarity(R[i], R[j])
     return similarity
+
+def get_category_scores(user_vector: np.ndarray) -> dict[str, float]:
+    return {
+        category: float(np.dot(user_vector, category_vector))
+        for category, category_vector in CATEGORY_VECTORS.items()
+    }
 
 def contrast_text_style(value: float, min_value: float, max_value: float, cutoff: float = 0.65) -> str:
     if max_value == min_value:
@@ -614,12 +626,82 @@ st.dataframe(
 )
 
 # ─────────────────────────────────────────────
-# Step D — Truncated SVD → R̂
+# Step D — Category Preference using Vector Weighted Sum
+# ─────────────────────────────────────────────
+st.markdown("""
+<div class="sv-card">
+  <div class="sv-card-title">
+    <span class="fa-badge">D</span>
+    Category Preference &mdash; Vector Weighted Sum
+  </div>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown(
+    """
+    <div class="sv-note">
+      ใช้ dot product ระหว่างเวกเตอร์คะแนนของลูกค้ากับเวกเตอร์ฐานของหมวดหมู่
+      เพื่อดูว่าลูกค้าคนนั้นมีแนวโน้มสนใจหมวด <strong>Fashion</strong> หรือ <strong>IT</strong> มากกว่า
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+df_category_basis = pd.DataFrame(
+    CATEGORY_VECTORS,
+    index=PRODUCTS,
+).T
+st.dataframe(
+    df_category_basis.style
+        .format("{:.0f}")
+        .background_gradient(cmap="YlGn", axis=None)
+        .map(lambda value: contrast_text_style(value, 0, 1, cutoff=0.65)),
+    use_container_width=True,
+)
+
+category_selected_idx = st.selectbox(
+    "เลือกลูกค้าที่ต้องการดูหมวดหมู่ที่สนใจ",
+    options=range(n_users),
+    format_func=lambda i: user_labels[i],
+    key="category_user",
+)
+
+category_user_vector = R[category_selected_idx]
+category_scores = get_category_scores(category_user_vector)
+top_category = max(category_scores, key=category_scores.get)
+
+cat_col1, cat_col2 = st.columns(2)
+with cat_col1:
+    st.metric("Fashion", f"{category_scores['Fashion']:.0f}")
+with cat_col2:
+    st.metric("IT", f"{category_scores['IT']:.0f}")
+
+df_category_scores = pd.DataFrame(
+    {
+        "หมวดหมู่": list(category_scores.keys()),
+        "คะแนนความสนใจ": list(category_scores.values()),
+    }
+).set_index("หมวดหมู่")
+
+st.dataframe(
+    df_category_scores.style
+        .format({"คะแนนความสนใจ": "{:.0f}"})
+        .bar(subset=["คะแนนความสนใจ"], color="#2E7D32"),
+    use_container_width=True,
+)
+
+if category_scores["Fashion"] == category_scores["IT"]:
+    st.info(f"{user_labels[category_selected_idx]} สนใจหมวด Fashion และ IT ใกล้เคียงกัน")
+else:
+    st.success(f"สรุป: {user_labels[category_selected_idx]} มีแนวโน้มสนใจหมวด {top_category} มากกว่า")
+
+# ─────────────────────────────────────────────
+# Step E — Truncated SVD → R̂
 # ─────────────────────────────────────────────
 st.markdown(f"""
 <div class="sv-card">
   <div class="sv-card-title">
-    <span class="fa-badge">D</span>
+    <span class="fa-badge">E</span>
     Truncated SVD (k={k}) &mdash; Matrix R̂ ที่สร้างขึ้นใหม่
   </div>
 </div>
@@ -659,12 +741,12 @@ st.info(
 )
 
 # ─────────────────────────────────────────────
-# Step E — Recommendation engine
+# Step F — Recommendation engine
 # ─────────────────────────────────────────────
 st.markdown("""
 <div class="sv-card">
   <div class="sv-card-title">
-    <span class="fa-badge">E</span>
+    <span class="fa-badge">F</span>
     Recommendation Engine &mdash; ผลการแนะนำสินค้า
   </div>
 </div>
