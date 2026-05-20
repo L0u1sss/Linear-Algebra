@@ -427,7 +427,7 @@ st.markdown("""
 <div class="sv-card">
   <div class="sv-card-title">
     <span class="fa-badge">A</span>
-    Matrix R &mdash; User-Product Matrix (แก้ไขได้โดยตรง)
+    Matrix R &mdash; User-Product Matrix
   </div>
 </div>
 """, unsafe_allow_html=True)
