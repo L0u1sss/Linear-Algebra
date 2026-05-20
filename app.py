@@ -18,40 +18,123 @@ st.set_page_config(
 st.markdown("""
 <link rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap"
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Sarabun:wght@300;400;600;700&display=swap"
   rel="stylesheet"/>
 
 <style>
 /* ── base ── */
 html, body, [class*="css"] {
-    font-family: 'Sarabun', sans-serif;
+    font-family: 'Outfit', 'Sarabun', sans-serif;
 }
 
 :root {
     --orange:      #EE4D2D;
-    --orange2:     #FF7337;
-    --orange-lite: #FFF3F0;
-    --bg:          #F5F5F5;
+    --orange2:     #FF5722;
+    --orange-lite: #FFF5F2;
+    --bg:          #F8FAFC;
     --card-bg:     #FFFFFF;
-    --text:        #212121;
-    --sub:         #757575;
-    --border:      #E8E8E8;
+    --text:        #0F172A;
+    --sub:         #64748B;
+    --border:      #E2E8F0;
     --sidebar-bg:  #EE4D2D;
+    
+    /* Override Streamlit built-in variables to force light mode colors */
+    --st-background-color: #F8FAFC !important;
+    --st-secondary-background-color: #FFFFFF !important;
+    --st-text-color: #0F172A !important;
+    --st-border-color: #E2E8F0 !important;
+    --st-primary-color: #EE4D2D !important;
+}
+
+/* Ensure CSS custom properties adapt to light colors in all theme contexts */
+[data-theme="light"], [data-theme="dark"] {
+    --st-background-color: #F8FAFC !important;
+    --st-secondary-background-color: #FFFFFF !important;
+    --st-text-color: #0F172A !important;
+    --st-border-color: #E2E8F0 !important;
+    --st-primary-color: #EE4D2D !important;
 }
 
 /* background */
-.stApp { background: var(--bg) !important; color: var(--text); }
-
-/* sidebar — Shopee red */
-section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #EE4D2D 0%, #C03A20 100%) !important;
+.stApp, .stApp [data-theme="light"], .stApp [data-theme="dark"] {
+    background: var(--bg) !important;
+    color: var(--text) !important;
 }
-section[data-testid="stSidebar"] * { color: #fff !important; }
+
+/* Force typography colors to stay dark slate */
+h1, h2, h3, h4, h5, h6, p, label, li, span, small {
+    color: var(--text) !important;
+}
+
+/* Force header banner typography inside .sv-header to remain white */
+.sv-header, .sv-header h1, .sv-header p, .sv-header h1 *, .sv-header p * {
+    color: #FFFFFF !important;
+}
+
+/* Disable typing in selectbox dropdowns (make them click-only) */
+div[data-baseweb="select"] input {
+    caret-color: transparent !important;
+    color: transparent !important;
+    text-shadow: 0 0 0 transparent !important;
+    cursor: pointer !important;
+}
+
+/* sidebar — Shopee Orange */
+section[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #EE4D2D 0%, #FF5722 100%) !important;
+    border-right: 1px solid var(--border);
+}
+section[data-testid="stSidebar"] *,
+section[data-testid="stSidebar"] label,
+section[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p {
+    color: #FFFFFF !important;
+}
 section[data-testid="stSidebar"] input,
-section[data-testid="stSidebar"] select { color: #212121 !important; }
+section[data-testid="stSidebar"] select {
+    color: #0F172A !important;
+    background-color: #FFFFFF !important;
+}
 section[data-testid="stSidebar"] input {
-    color: #fff !important;
-    -webkit-text-fill-color: #fff !important;
+    color: #0F172A !important;
+    -webkit-text-fill-color: #0F172A !important;
+}
+
+/* Override inputs and selects in the main area */
+input, select, textarea {
+    background-color: #FFFFFF !important;
+    color: #0F172A !important;
+    border: 1px solid #E2E8F0 !important;
+}
+
+/* Style baseweb selects (selectbox/multiselect) */
+div[data-baseweb="select"] > div {
+    background-color: #FFFFFF !important;
+    color: #0F172A !important;
+    border: 1px solid #E2E8F0 !important;
+}
+
+div[data-baseweb="select"] * {
+    color: #0F172A !important;
+}
+
+/* Dropdown popovers */
+div[role="listbox"] {
+    background-color: #FFFFFF !important;
+    color: #0F172A !important;
+    border: 1px solid #E2E8F0 !important;
+}
+div[role="option"] {
+    background-color: #FFFFFF !important;
+    color: #0F172A !important;
+}
+div[role="option"]:hover, div[role="option"][aria-selected="true"] {
+    background-color: #EE4D2D !important;
+    color: #FFFFFF !important;
+}
+
+/* Widget labels & Help texts */
+[data-testid="stWidgetLabel"] p, .stWidgetLabel, label[data-testid="stWidgetLabel"] {
+    color: #0F172A !important;
 }
 
 /* header banner */
@@ -60,21 +143,27 @@ section[data-testid="stSidebar"] input {
     border-radius: 16px;
     padding: 28px 36px;
     margin-bottom: 24px;
-    box-shadow: 0 8px 28px rgba(238,77,45,.30);
-    color: #fff;
+    box-shadow: 0 8px 28px rgba(238,77,45,.15);
+    color: #fff !important;
 }
-.sv-header h1 { font-size: 1.9rem; font-weight: 700; margin: 0 0 6px; }
-.sv-header p  { margin: 0; opacity: .9; font-size: .97rem; }
+.sv-header h1 { font-size: 1.9rem; font-weight: 700; margin: 0 0 6px; color: #fff !important; }
+.sv-header p  { margin: 0; opacity: .9; font-size: .97rem; color: #fff !important; }
 
 /* cards */
 .sv-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--orange);
-    border-radius: 14px;
-    padding: 22px 26px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 12px rgba(0,0,0,.07);
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border) !important;
+    border-left: 4px solid var(--orange) !important;
+    border-radius: 14px !important;
+    padding: 22px 26px !important;
+    margin-bottom: 20px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,.04) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
+}
+.sv-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(238, 77, 45, 0.08) !important;
+    border-color: rgba(238, 77, 45, 0.2) !important;
 }
 .sv-card-title {
     display: flex;
@@ -82,12 +171,12 @@ section[data-testid="stSidebar"] input {
     gap: 10px;
     font-size: 1.1rem;
     font-weight: 700;
-    color: var(--orange);
+    color: var(--orange) !important;
     margin-bottom: 14px;
 }
 .sv-card-title .fa-badge {
-    background: var(--orange);
-    color: #fff;
+    background: var(--orange) !important;
+    color: #fff !important;
     border-radius: 50%;
     width: 32px; height: 32px;
     display: inline-flex;
@@ -97,26 +186,56 @@ section[data-testid="stSidebar"] input {
     flex-shrink: 0;
 }
 
-/* score legend pills */
+/* score legend pills (Light mode pastel style) */
 .pill { display:inline-block; padding:4px 14px; border-radius:20px;
         font-size:.83rem; font-weight:600; margin:3px; }
-.pill-0 { background:#F5F5F5;  color:#9E9E9E; border:1px solid #E0E0E0; }
-.pill-1 { background:#FFF8E1;  color:#F57F17; border:1px solid #FFE082; }
-.pill-3 { background:#FFF3E0;  color:#E65100; border:1px solid #FFCC80; }
-.pill-4 { background:#FCE4EC;  color:#AD1457; border:1px solid #F48FB1; }
-.pill-5 { background:#FFE0B2;  color:#BF360C; border:1px solid #FFAB40; }
+.pill-0 { background:#F1F5F9;  color:#64748B; border:1px solid #CBD5E1; }
+.pill-1 { background:#FFF8E1;  color:#F57C00; border:1px solid #FFE082; }
+.pill-2 { background:#E1F5FE;  color:#0288D1; border:1px solid #B3E5FC; }
+.pill-3 { background:#F3E5F5;  color:#7B1FA2; border:1px solid #E1BEE7; }
+.pill-4 { background:#FFEbee;  color:#C2185B; border:1px solid #FFCDD2; }
+.pill-5 { background:#FBE9E7;  color:#D84315; border:1px solid #FFCCBC; }
 
 /* buttons */
 .stButton > button {
     background: linear-gradient(90deg, #EE4D2D, #FF7337) !important;
     color: #fff !important;
     border: none !important;
-    border-radius: 8px !important;
+    border-radius: 10px !important;
     font-weight: 700 !important;
-    padding: 8px 22px !important;
-    transition: opacity .2s;
+    padding: 10px 24px !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(238, 77, 45, 0.15);
 }
-.stButton > button:hover { opacity: .85 !important; }
+.stButton > button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(238, 77, 45, 0.25);
+    opacity: 0.95 !important;
+}
+.stButton > button:active {
+    transform: translateY(1px);
+}
+
+/* Sidebar button — orange with white text to match design */
+section[data-testid="stSidebar"] .stButton > button {
+    background: #EE4D2D !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    width: 100% !important;
+    padding: 12px 20px !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+    transition: all 0.2s ease !important;
+}
+section[data-testid="stSidebar"] .stButton > button * {
+    color: #FFFFFF !important;
+}
+section[data-testid="stSidebar"] .stButton > button:hover {
+    background: #D94020 !important;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.28) !important;
+    transform: translateY(-1px) !important;
+}
 
 /* metric */
 [data-testid="stMetricValue"] { color: var(--orange) !important; font-size: 1.8rem !important; }
@@ -124,26 +243,16 @@ section[data-testid="stSidebar"] input {
 /* dataframe */
 [data-testid="stDataFrame"] { border-radius: 10px; overflow: hidden; }
 
-/* alerts */
-div[data-testid="stAlert"] {
-    border-radius: 10px !important;
-    color: #212121 !important;
-}
-div[data-testid="stAlert"] * {
-    color: #212121 !important;
-    opacity: 1 !important;
-}
-
 .sv-note {
-    color: #212121;
-    background: #FFF7ED;
-    border-left: 4px solid var(--orange);
-    border-radius: 10px;
-    padding: 12px 16px;
-    margin: 8px 0 14px;
-    font-weight: 500;
+    color: var(--text) !important;
+    background: var(--orange-lite) !important;
+    border-left: 4px solid var(--orange) !important;
+    border-radius: 10px !important;
+    padding: 12px 16px !important;
+    margin: 8px 0 14px !important;
+    font-weight: 500 !important;
 }
-.sv-note strong { color: var(--orange); }
+.sv-note strong { color: var(--orange2) !important; }
 
 /* divider */
 .sv-divider { border:none; border-top:1px solid var(--border); margin:16px 0; }
@@ -153,10 +262,10 @@ div[data-testid="stAlert"] * {
     text-align: center;
     padding: 40px 20px;
     color: var(--sub);
-    border: 2px dashed #FFCDD2;
+    border: 2px dashed var(--orange2);
     border-radius: 12px;
     margin: 12px 0;
-    background: #FFF3F0;
+    background: var(--orange-lite);
 }
 .sv-empty i { font-size: 2.5rem; margin-bottom: 12px; display:block; color: var(--orange); opacity:.6; }
 </style>
@@ -166,10 +275,11 @@ div[data-testid="stAlert"] * {
 # Constants
 # ─────────────────────────────────────────────
 PRODUCTS = ["เสื้อยืด", "หูฟังไร้สาย", "รองเท้าผ้าใบ", "กระเป๋าเป้", "คีย์บอร์ดเกมมิ่ง"]
-SCORE_OPTIONS = [0, 1, 3, 4, 5]
+SCORE_OPTIONS = [0, 1, 2, 3, 4, 5]
 SCORE_LABELS = {
     0: "0 = ยังไม่มีการโต้ตอบ",
     1: "1 = เคยดูสินค้า",
+    2: "2 = กดถูกใจ",
     3: "3 = เพิ่มลงตะกร้า",
     4: "4 = รอการโอนเงิน",
     5: "5 = ซื้อสินค้าแล้ว",
@@ -222,7 +332,7 @@ def contrast_text_style(value: float, min_value: float, max_value: float, cutoff
 
     if normalized >= cutoff:
         return "color:#FFFFFF;font-weight:700;"
-    return "color:#212121;font-weight:600;"
+    return "color:#121214;font-weight:600;"
 
 # ─────────────────────────────────────────────
 # Header
@@ -252,7 +362,7 @@ with st.sidebar:
         key=f"add_name_{add_form_version}",
     )
     st.markdown("<small>ให้คะแนนสินค้าแต่ละชิ้น</small>", unsafe_allow_html=True)
-    st.caption("0 = ยังไม่มีการโต้ตอบ · 1 = เคยดูสินค้า · 3 = เพิ่มลงตะกร้า · 4 = รอการโอนเงิน · 5 = ซื้อสินค้าแล้ว")
+    st.caption("0 = ยังไม่มีการโต้ตอบ · 1 = เคยดูสินค้า · 2 = กดถูกใจ · 3 = เพิ่มลงตะกร้า · 4 = รอการโอนเงิน · 5 = ซื้อสินค้าแล้ว")
 
     new_scores = []
     for p in PRODUCTS:
@@ -290,6 +400,7 @@ st.markdown("""
   </div>
   <span class="pill pill-0"><i class="fa-regular fa-circle-xmark"></i>&nbsp; 0 = ยังไม่มีการโต้ตอบ</span>
   <span class="pill pill-1"><i class="fa-regular fa-eye"></i>&nbsp; 1 = เคยดูสินค้า</span>
+  <span class="pill pill-2"><i class="fa-regular fa-thumbs-up"></i>&nbsp; 2 = กดถูกใจ</span>
   <span class="pill pill-3"><i class="fa-solid fa-cart-plus"></i>&nbsp; 3 = เพิ่มลงตะกร้า</span>
   <span class="pill pill-4"><i class="fa-solid fa-clock"></i>&nbsp; 4 = รอการโอนเงิน</span>
   <span class="pill pill-5"><i class="fa-solid fa-bag-shopping"></i>&nbsp; 5 = ซื้อสินค้าแล้ว</span>
@@ -426,8 +537,15 @@ with col3:
     st.caption("ความสัมพันธ์ Product ↔ Latent Feature")
     df_VT = pd.DataFrame(VT.round(4), columns=PRODUCTS,
                          index=[f"F{i+1}" for i in range(VT.shape[0])])
-    st.dataframe(df_VT.style.format("{:.4f}").background_gradient(cmap="Oranges"),
-                 use_container_width=True)
+    vt_min = float(df_VT.min().min())
+    vt_max = float(df_VT.max().max())
+    st.dataframe(
+        df_VT.style
+            .format("{:.4f}")
+            .background_gradient(cmap="Oranges")
+            .map(lambda value: contrast_text_style(value, vt_min, vt_max, cutoff=0.6)),
+        use_container_width=True,
+    )
 
 # ─────────────────────────────────────────────
 # Step C — User Similarity using Cosine Similarity
@@ -522,10 +640,13 @@ st.markdown(
 )
 
 df_Rhat = pd.DataFrame(R_hat.round(3), index=user_labels, columns=PRODUCTS)
+rhat_min = float(df_Rhat.min().min())
+rhat_max = float(df_Rhat.max().max())
 st.dataframe(
     df_Rhat.style
         .format("{:.3f}")
-        .background_gradient(cmap="YlOrRd"),
+        .background_gradient(cmap="YlOrRd")
+        .map(lambda value: contrast_text_style(value, rhat_min, rhat_max, cutoff=0.6)),
     use_container_width=True,
 )
 
